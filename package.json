@@ -1,0 +1,37 @@
+{
+  "name": "petsgame-backend",
+  "version": "0.0.1",
+  "description": "The API for petsgame",
+  "main": "app.js",
+  "scripts": {
+    "test": "test",
+    "start": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iamnoel/petsgame-backend.git"
+  },
+  "keywords": [
+    "api",
+    "pets",
+    "game",
+    "backend"
+  ],
+  "author": "Noel Ward",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/iamnoel/petsgame-backend/issues"
+  },
+  "homepage": "https://github.com/iamnoel/petsgame-backend#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "morgan": "^1.9.1",
+    "nodemon": "^2.0.2"
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-google": "^0.14.0"
+  }
+}
