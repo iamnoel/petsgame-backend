@@ -5,8 +5,8 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const path = require('path');
 
-const petRoutes = require('./api/routes/pets');
-const userRoutes = require('./api/routes/users');
+const petRoutes = require('./routes/pets');
+const userRoutes = require('./routes/users');
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended: false}));
@@ -46,7 +46,7 @@ const root = path.join(__dirname, '/client/build');
 app.use(express.static(root));
 app.use((req, res, next) => {
   if (req.method === 'GET' && req.accepts('html') && !req.is('json') && !req.path.includes('.')) {
-    res.sendFile('index.html', { root });
+    res.sendFile('index.html', {root});
   } else next();
 });
 
