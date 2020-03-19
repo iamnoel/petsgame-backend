@@ -21,10 +21,37 @@ router.post('/', (req, res, next) => {
 router.get('/:petID', (req, res, next) => {
   const id = req.params.petID;
 
-  if (id == '0012') {
+  if (id == '0015') {
     res.status(200).json({
       message: `The unique pet ID ${id} was found!`,
       id: id,
+      name: 'Dragon Pet',
+      type: 'Dragon',
+      health: 10,
+    });
+  } else if (id == '0014') {
+    res.status(200).json({
+      message: `The unique pet ID ${id} was found!`,
+      id: id,
+      name: 'Tiger Pet',
+      type: 'Tiger',
+      health: 10,
+    });
+  } else if (id == '0013') {
+    res.status(200).json({
+      message: `The unique pet ID ${id} was found!`,
+      id: id,
+      name: 'Angel Pet',
+      type: 'Angel',
+      health: 10,
+    });
+  } else if (id == '0012') {
+    res.status(200).json({
+      message: `The unique pet ID ${id} was found!`,
+      id: id,
+      name: 'Demon Pet',
+      type: 'Demon',
+      health: 10,
     });
   } else {
     res.status(200).json({
