@@ -3,7 +3,28 @@ const router = express.Router();
 
 router.get('/', (req, res, next) => {
   res.status(200).json({
-    message: 'Handling GET requests to /pets',
+    pets: [
+      {
+        id: 15,
+        name: 'Dragon Pet',
+        type: 'Dragon',
+      },
+      {
+        id: 14,
+        name: 'Tiger Pet',
+        type: 'Tiger',
+      },
+      {
+        id: 13,
+        name: 'Angel Pet',
+        type: 'Angel',
+      },
+      {
+        id: 12,
+        name: 'Demon Pet',
+        type: 'Demon',
+      },
+    ],
   });
 });
 
@@ -21,7 +42,7 @@ router.post('/', (req, res, next) => {
 router.get('/:petID', (req, res, next) => {
   const id = req.params.petID;
 
-  if (id == '0015') {
+  if (id == '15') {
     res.status(200).json({
       message: `The unique pet ID ${id} was found!`,
       id: id,
@@ -29,7 +50,7 @@ router.get('/:petID', (req, res, next) => {
       type: 'Dragon',
       health: 10,
     });
-  } else if (id == '0014') {
+  } else if (id == '14') {
     res.status(200).json({
       message: `The unique pet ID ${id} was found!`,
       id: id,
@@ -37,7 +58,7 @@ router.get('/:petID', (req, res, next) => {
       type: 'Tiger',
       health: 10,
     });
-  } else if (id == '0013') {
+  } else if (id == '13') {
     res.status(200).json({
       message: `The unique pet ID ${id} was found!`,
       id: id,
@@ -45,7 +66,7 @@ router.get('/:petID', (req, res, next) => {
       type: 'Angel',
       health: 10,
     });
-  } else if (id == '0012') {
+  } else if (id == '12') {
     res.status(200).json({
       message: `The unique pet ID ${id} was found!`,
       id: id,
