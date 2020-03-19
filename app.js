@@ -4,9 +4,15 @@ const app = express();
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const path = require('path');
+const mongoose = require('mongoose');
 
 const petRoutes = require('./routes/pets');
 const userRoutes = require('./routes/users');
+
+mongoose.connect(process.env.DB_PATH, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended: false}));

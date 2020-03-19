@@ -1,85 +1,64 @@
 const express = require('express');
 const router = express.Router();
+const mongoose = require('mongoose');
+
+const Pet = require('../models/pets');
 
 router.get('/', (req, res, next) => {
-  res.status(200).json({
-    pets: [
-      {
-        id: 15,
-        name: 'Dragon Pet',
-        type: 'Dragon',
-      },
-      {
-        id: 14,
-        name: 'Tiger Pet',
-        type: 'Tiger',
-      },
-      {
-        id: 13,
-        name: 'Angel Pet',
-        type: 'Angel',
-      },
-      {
-        id: 12,
-        name: 'Demon Pet',
-        type: 'Demon',
-      },
-    ],
-  });
-});
-
-router.post('/', (req, res, next) => {
-  const pet = {
-    name: req.body.name,
-    price: req.body.price,
-  };
-  res.status(201).json({
-    message: 'Pet was created',
-    pet: pet,
-  });
+  Pet.find()
+      .exec()
+      .then( (pets) => {
+        console.log(pets);
+        res.status(200).json({pets});
+      })
+      .catch( (err) => {
+        console.log(err);
+        res.status(500).json({
+          error: err,
+        });
+      });
 });
 
 router.get('/:petID', (req, res, next) => {
   const id = req.params.petID;
+  Pet.findById(id)
+      .exec()
+      .then( (doc) => {
+        console.log(`Database received: ${doc}`);
+        if (doc) {
+          res.status(200).json(doc);
+        } else {
+          res.status(404).json({
+            message: 'There were 0 results returned',
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json({error: err});
+      });
+});
 
-  if (id == '15') {
-    res.status(200).json({
-      message: `The unique pet ID ${id} was found!`,
-      id: id,
-      name: 'Dragon Pet',
-      type: 'Dragon',
-      health: 10,
+router.post('/', (req, res, next) => {
+  const pet = new Pet({
+    _id: new mongoose.Types.ObjectId(),
+    name: req.body.name,
+    type: req.body.type,
+    health: req.body.health,
+  });
+
+  pet.save().then((result) => {
+    console.log(result);
+    res.status(201).json({
+      message: 'Pet was created',
+      pet: result,
     });
-  } else if (id == '14') {
-    res.status(200).json({
-      message: `The unique pet ID ${id} was found!`,
-      id: id,
-      name: 'Tiger Pet',
-      type: 'Tiger',
-      health: 10,
+  }).catch( (err) => {
+    console.log(err);
+    res.status(500).json({
+      error: err,
     });
-  } else if (id == '13') {
-    res.status(200).json({
-      message: `The unique pet ID ${id} was found!`,
-      id: id,
-      name: 'Angel Pet',
-      type: 'Angel',
-      health: 10,
-    });
-  } else if (id == '12') {
-    res.status(200).json({
-      message: `The unique pet ID ${id} was found!`,
-      id: id,
-      name: 'Demon Pet',
-      type: 'Demon',
-      health: 10,
-    });
-  } else {
-    res.status(200).json({
-      message: `You entered id ${id}`,
-      id: id,
-    });
-  }
+  });
 });
 
 router.patch('/:petID', (req, res, next) => {
