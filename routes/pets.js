@@ -4,96 +4,126 @@ const mongoose = require('mongoose');
 
 const Pet = require('../models/pets');
 
-router.get('/', (req, res, next) => {
-  Pet.find()
-      .exec()
-      .then( (pets) => {
-        console.log(pets);
-        res.status(200).json({pets});
-      })
-      .catch( (err) => {
-        console.log(err);
-        res.status(500).json({
-          error: err,
-        });
-      });
+router.get('/', async (req, res, next) => {
+  try {
+    const pets = await Pet.find();
+    console.log(pets);
+    res.status(200).json({pets});
+  } catch (error) {
+    console.log('Error', error);
+    res.status(500).json({
+      message: 'An error was encountered trying to get all pets',
+      error: error,
+    });
+  }
 });
 
-router.get('/:petID', (req, res, next) => {
-  const id = req.params.petID;
-  Pet.findById(id)
-      .exec()
-      .then( (doc) => {
-        console.log(`Database received: ${doc}`);
-        if (doc) {
-          res.status(200).json(doc);
+router.get('/:petID', async (req, res, next) => {
+  try {
+    const id = req.params.petID;
+    const pet = await Pet.findById(id);
+    console.log(`Received from the db: ${pet}`);
+    if (pet) {
+      res.status(200).json({pet});
+    } else {
+      res.status(404).json({
+        message: `There were 0 results returned for id: ${id}`,
+        pet,
+      });
+    }
+  } catch (error) {
+    console.log(`An error was encountered trying to get pet id: ${id}`);
+    res.status(500).json({
+      message: `An error was encountered trying to get pet id: ${id}`,
+      error: error,
+    });
+  }
+});
+
+router.post('/', async (req, res, next) => {
+  try {
+    const pet = new Pet({
+      _id: new mongoose.Types.ObjectId(),
+      name: req.body.name,
+      type: req.body.type,
+      health: req.body.health,
+    });
+    const addPet = await pet.save();
+    if (addPet) {
+      res.status(201).json({
+        message: 'Pet was created',
+        pet: addPet,
+      });
+    }
+  } catch (error) {
+    console.log('Error: ', error);
+    res.status(500).json({
+      message: `An error was encountered trying to create pet: ${name}`,
+      error: error,
+    });
+  }
+});
+
+router.patch('/:petID', async (req, res, next) => {
+  try {
+    const id = req.params.petID;
+    const updateOps = {};
+    for (const ops of req.body) {
+      updateOps[ops.propName] = ops.value;
+    }
+    const updatePet = await Pet.updateOne({_id: id}, {$set: updateOps});
+    if (updatePet) {
+      if (updatePet.n > 0) {
+        if (updatePet.nModified > 0) {
+          res.status(200).json({
+            message: 'Pet successfully updated',
+            updatePet,
+          });
         } else {
-          res.status(404).json({
-            message: 'There were 0 results returned',
+          res.status(200).json({
+            message: 'No changes made',
+            updatePet,
           });
         }
-      })
-      .catch((err) => {
-        console.log(err);
-        res.status(500).json({error: err});
-      });
-});
-
-router.post('/', (req, res, next) => {
-  const pet = new Pet({
-    _id: new mongoose.Types.ObjectId(),
-    name: req.body.name,
-    type: req.body.type,
-    health: req.body.health,
-  });
-
-  pet.save().then((result) => {
-    console.log(result);
-    res.status(201).json({
-      message: 'Pet was created',
-      pet: result,
-    });
-  }).catch( (err) => {
-    console.log(err);
+      } else {
+        res.status(404).json({
+          message: `No pets were found matching id: ${id}`,
+        });
+      }
+    }
+  } catch (error) {
     res.status(500).json({
-      error: err,
+      message: `An error was encountered trying to update pet id: ${id}.`,
+      error: error,
     });
-  });
-});
-
-router.patch('/:petID', (req, res, next) => {
-  const id = req.params.petID;
-  const updateOps = {};
-  for (const ops of req.body) {
-    updateOps[ops.propName] = ops.value;
   }
-  Pet.update({_id: id}, {$set: updateOps})
-      .exec()
-      .then( (result) => {
-        console.log(result);
-        res.status(200).json(result);
-      })
-      .catch( (err) => {
-        console.log(err);
-        res.status(500).json({
-          error: err,
-        });
-      });
 });
 
-router.delete('/:petID', (req, res, next) => {
-  const id = req.params.petID;
-  Pet.deleteOne({_id: id})
-      .exec()
-      .then( (result) => {
+router.delete('/:petID', async (req, res, next) => {
+  try {
+    const id = req.params.petID;
+    const deletePet = await Pet.deleteOne({_id: id});
+    if (deletePet) {
+      if (deletePet.deletedCount > 0) {
+        console.log('Deleted!');
         res.status(200).json({
-          result,
+          message: `Pet was successfully deleted (id: ${id})`,
+          deletePet,
         });
-      })
-      .catch( (err) => {
-        console.log(err);
-        res.status(500).json({error: err});
-      });
+      } else {
+        res.status(404).json({
+          message: 'No records were deleted',
+          deletePet,
+        });
+      }
+    }
+  } catch (error) {
+    console.log('Error');
+    res.status(500).json({
+      message: `An error was encountered trying to delete pet id: ${id}.`,
+      error: error,
+    });
+  }
 });
 
 module.exports = router;
