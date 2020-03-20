@@ -62,17 +62,38 @@ router.post('/', (req, res, next) => {
 });
 
 router.patch('/:petID', (req, res, next) => {
-  res.status(200).json({
-    message: 'Updated pet',
-    id: req.params.petID,
-  });
+  const id = req.params.petID;
+  const updateOps = {};
+  for (const ops of req.body) {
+    updateOps[ops.propName] = ops.value;
+  }
+  Pet.update({_id: id}, {$set: updateOps})
+      .exec()
+      .then( (result) => {
+        console.log(result);
+        res.status(200).json(result);
+      })
+      .catch( (err) => {
+        console.log(err);
+        res.status(500).json({
+          error: err,
+        });
+      });
 });
 
 router.delete('/:petID', (req, res, next) => {
-  res.status(200).json({
-    message: `Deleted pet`,
-    id: req.params.petID,
-  });
+  const id = req.params.petID;
+  Pet.remove({_id: id})
+      .exec()
+      .then( (result) => {
+        res.status(200).json({
+          result,
+        });
+      })
+      .catch( (err) => {
+        console.log(err);
+        res.status(500).json({error: err});
+      });
 });
 
 module.exports = router;
