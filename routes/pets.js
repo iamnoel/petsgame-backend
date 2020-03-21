@@ -40,6 +40,30 @@ router.get('/:petID', async (req, res, next) => {
   }
 });
 
+router.get('/:petID/feed', async (req, res, next) => {
+  try {
+    const id = req.params.petID;
+    const pet = await Pet.findById(id);
+    pet.health++;
+    await pet.save();
+    console.log(`Fed pet: ${pet}`);
+    if (pet) {
+      res.status(200).json({pet});
+    } else {
+      res.status(404).json({
+        message: `There were 0 results returned for id: ${id}`,
+        pet,
+      });
+    }
+  } catch (error) {
+    console.log(`An error was encountered trying to get pet id: ${id}`);
+    res.status(500).json({
+      message: `An error was encountered trying to get pet id: ${id}`,
+      error: error,
+    });
+  }
+});
+
 router.post('/', async (req, res, next) => {
   try {
     const pet = new Pet({
