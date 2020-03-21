@@ -108,4 +108,26 @@ router.delete('/:inventoryID', async (req, res, next) => {
   }
 });
 
+router.delete('/:inventoryID/pets/:petID', async (req, res, next) => {
+  try {
+    const id = req.params.inventoryID;
+    const pet = req.params.petID;
+    const getInventoryPet = await Inventory.findById(id);
+    const result = getInventoryPet.pets.find( ({id}) => id == pet );
+    const index = getInventoryPet.pets.indexOf(result);
+    getInventoryPet.pets.splice(index, 1);
+    await getInventoryPet.save();
+    res.status(200).json({
+      message: `Pet ${pet} was removed from inventory ${id}`,
+    });
+  } catch (error) {
+    console.log('Error: ', error);
+    res.status(500).json({
+      message: `An error was encountered trying to add a pet to inventory: ${id}`,
+      error: error,
+    });
+  }
+});
+
+
 module.exports = router;
