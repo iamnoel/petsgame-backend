@@ -31,7 +31,7 @@ router.post('/', async (req, res, next) => {
     if (addUser) {
       res.status(201).json({
         message: 'User was created',
-        user: addUser,
+        user,
       });
     }
   } catch (error) {
