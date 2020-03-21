@@ -8,6 +8,7 @@ const mongoose = require('mongoose');
 
 const petRoutes = require('./routes/pets');
 const userRoutes = require('./routes/users');
+const inventoryRoutes = require('./routes/inventories');
 
 mongoose.connect(process.env.DB_PATH, {
   useNewUrlParser: true,
@@ -31,6 +32,7 @@ app.use((req, res, next) => {
 // Routes for request handling
 app.use('/pets/', petRoutes);
 app.use('/users/', userRoutes);
+app.use('/inventories/', inventoryRoutes);
 
 app.use((req, res, next) => {
   const error = new Error('Not found');
