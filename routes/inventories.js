@@ -66,14 +66,16 @@ router.post('/:inventoryID/pets', async (req, res, next) => {
   try {
     const id = req.params.inventoryID;
     const pet = req.body.pet;
-    const getInventoryPet = await inventory.findById(id);
-    const inventoryPets = getInventoryPet.pets;
-    inventoryPets.push(pet);
-    // TODO: add a new pet to an existing inventory
+    const getInventoryPet = await Inventory.findById(id);
+    getInventoryPet.pets.push(pet);
+    await getInventoryPet.save();
+    res.status(200).json({
+      message: `Pet ${pet.id} was added to inventory ${id}`,
+    });
   } catch (error) {
     console.log('Error: ', error);
     res.status(500).json({
-      message: `An error was encountered trying to create inventory`,
+      message: `An error was encountered trying to add a pet to inventory: ${id}`,
       error: error,
     });
   }
