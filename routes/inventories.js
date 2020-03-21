@@ -62,10 +62,10 @@ router.post('/', async (req, res, next) => {
   }
 });
 
-router.post('/:inventoryID/pets', async (req, res, next) => {
+router.post('/:inventoryID/pets/:petID', async (req, res, next) => {
   try {
     const id = req.params.inventoryID;
-    const pet = req.body.pet;
+    const pet = {id: req.params.petID};
     const getInventoryPet = await Inventory.findById(id);
     getInventoryPet.pets.push(pet);
     await getInventoryPet.save();
