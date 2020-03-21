@@ -3,6 +3,7 @@ const router = express.Router();
 const mongoose = require('mongoose');
 
 const Inventory = require('../models/inventories');
+const Pet = require('../models/pets');
 
 router.get('/', async (req, res, next) => {
   try {
@@ -25,6 +26,33 @@ router.get('/:inventoryID', async (req, res, next) => {
     console.log(`Received from the db: ${inventory}`);
     if (inventory) {
       res.status(200).json({inventory});
+    } else {
+      res.status(404).json({
+        message: `There were 0 results returned for id: ${id}`,
+        inventory,
+      });
+    }
+  } catch (error) {
+    console.log(`An error was encountered trying to get inventory id: ${id}`);
+    res.status(500).json({
+      message: `An error was encountered trying to get inventory id: ${id}`,
+      error: error,
+    });
+  }
+});
+
+router.get('/:inventoryID/pets', async (req, res, next) => {
+  try {
+    const id = req.params.inventoryID;
+    const inventory = await Inventory.findById(id);
+    console.log(`Received from the db: ${inventory}`);
+    if (inventory) {
+      const pets = [];
+      for (p of inventory.pets) {
+        const pet = await Pet.findById(p.id);
+        pets.push(pet);
+      }
+      res.status(200).json({pets});
     } else {
       res.status(404).json({
         message: `There were 0 results returned for id: ${id}`,
