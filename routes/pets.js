@@ -76,7 +76,7 @@ router.post('/', async (req, res, next) => {
     if (addPet) {
       res.status(201).json({
         message: 'Pet was created',
-        pet: addPet,
+        addPet,
       });
     }
   } catch (error) {
