@@ -31,7 +31,7 @@ router.post('/', async (req, res, next) => {
   //     error: error,
   //   });
   // }
-  res.status(201).json({
+  res.status(200).json({
     message: 'hi',
   });
 });
