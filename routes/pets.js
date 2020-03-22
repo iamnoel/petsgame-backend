@@ -21,24 +21,46 @@ router.get('/', async (req, res, next) => {
 router.get('/:petID', async (req, res, next) => {
   try {
     const id = req.params.petID;
-    const pet = await Pet.findById(id);
-    console.log(`Received from the db: ${pet}`);
-    if (pet) {
-      res.status(200).json({pet});
-    } else {
+    console.log(id);
+    const petData = await getPetById(id);
+    if (petData.code == 200) {
+      res.status(200).json({pet: petData.pet});
+    } else if ( petData.code == 404) {
       res.status(404).json({
         message: `There were 0 results returned for id: ${id}`,
-        pet,
+      });
+    } else {
+      res.status(500).json({
+        message: `Anz error was encountered trying to get pet id: ${id}`,
+        error: error,
       });
     }
   } catch (error) {
-    console.log(`An error was encountered trying to get pet id: ${id}`);
     res.status(500).json({
-      message: `An error was encountered trying to get pet id: ${id}`,
+      message: `An error was encountered trying to get pet id: ${req.params.petID}`,
       error: error,
     });
   }
 });
+
+const getPetById = async (id) => {
+  let code;
+  try {
+    const pet = await Pet.findById(id);
+    console.log(`Received from the db: ${pet}`);
+
+    if (pet) {
+      code = 200;
+    } else {
+      code = 404;
+    }
+    return ({pet, code});
+  } catch (error) {
+    console.log(`An error was encountered trying to get pet id: ${id}`);
+    code = 500;
+    return (code);
+  }
+};
 
 router.get('/:petID/feed', async (req, res, next) => {
   try {
