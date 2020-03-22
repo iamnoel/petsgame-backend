@@ -43,25 +43,46 @@ router.get('/', async (req, res, next) => {
 
 router.get('/:userID', async (req, res, next) => {
   try {
-    const id = req.params.petID;
-    const user = await User.findById(id);
-    console.log(`Received from the db: ${user}`);
-    if (user) {
-      res.status(200).json({user});
-    } else {
+    const id = req.params.userID;
+    console.log(id);
+    const userData = await getUserByID(id);
+    if (userData.code == 200) {
+      res.status(200).json({user: userData.user});
+    } else if ( userData.code == 404) {
       res.status(404).json({
         message: `There were 0 results returned for id: ${id}`,
-        user,
+      });
+    } else {
+      res.status(500).json({
+        message: `An error was encountered trying to get user id: ${id}`,
       });
     }
   } catch (error) {
-    console.log(`An error was encountered trying to get pet id: ${id}`);
     res.status(500).json({
-      message: `An error was encountered trying to get pet id: ${id}`,
+      message: `An error was encountered trying to get user id: ${req.params.petID}`,
       error: error,
     });
   }
 });
+
+const getUserByID = async (id) => {
+  let code;
+  try {
+    const user = await User.findById(id);
+    console.log(`Received from the db: ${user}`);
+
+    if (user) {
+      code = 200;
+    } else {
+      code = 404;
+    }
+    return ({user, code});
+  } catch (error) {
+    console.log(`An error was encountered trying to get pet id: ${id}`);
+    code = 500;
+    return (code);
+  }
+};
 
 router.post('/login', passport.authenticate('local'), (req, res, next)=> {
   res.status(200).json({
@@ -84,6 +105,7 @@ router.post('/', async (req, res, next) => {
     const addUser = await user.save();
     console.log(userz);
     if (addUser) {
+      res.header('Access-Control-Allow-Origin', '*');
       res.status(201).json({
         message: 'User was created',
         user,
