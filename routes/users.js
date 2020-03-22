@@ -30,7 +30,7 @@ const User = require('../models/users');
 
 router.post('/', async (req, res, next) => {
   try {
-    // hashedPass = await bcrypt.hash(req.body.password, 10);
+    hashedPass = await bcrypt.hash(req.body.password, 10);
     const user = new User({
       _id: new mongoose.Types.ObjectId(),
       name: req.body.name,
