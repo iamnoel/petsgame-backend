@@ -4,8 +4,6 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
-const userz = [];
-
 const User = require('../models/users');
 
 router.post('/', async (req, res, next) => {
@@ -17,10 +15,10 @@ router.post('/', async (req, res, next) => {
       email: req.body.email,
       password: hashedPass,
     });
-    userz.push(user);
+
     console.log(user);
     const addUser = await user.save();
-    console.log(userz);
+
     if (addUser) {
       res.status(201).json({
         message: 'User was created',
