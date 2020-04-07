@@ -93,11 +93,12 @@ router.post('/login', passport.authenticate('local'), (req, res, next)=> {
 
 router.post('/', async (req, res, next) => {
   try {
+    const hashedPass = await bcrypt.hash(req.body.password, 10);
     const user = new User({
       _id: new mongoose.Types.ObjectId(),
       name: req.body.name,
       email: req.body.email,
-      password: req.body.password,
+      password: hashedPass,
     });
     userz.push(user);
     console.log(user);
