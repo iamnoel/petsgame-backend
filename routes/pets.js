@@ -22,7 +22,7 @@ router.get('/:petID', async (req, res, next) => {
   try {
     const id = req.params.petID;
     console.log(id);
-    const petData = await getPetById(id);
+    const petData = await getPetByID(id);
     if (petData.code == 200) {
       res.status(200).json({pet: petData.pet});
     } else if ( petData.code == 404) {
@@ -31,8 +31,7 @@ router.get('/:petID', async (req, res, next) => {
       });
     } else {
       res.status(500).json({
-        message: `Anz error was encountered trying to get pet id: ${id}`,
-        error: error,
+        message: `An error was encountered trying to get pet id: ${id}`,
       });
     }
   } catch (error) {
@@ -43,7 +42,7 @@ router.get('/:petID', async (req, res, next) => {
   }
 });
 
-const getPetById = async (id) => {
+const getPetByID = async (id) => {
   let code;
   try {
     const pet = await Pet.findById(id);
