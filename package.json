@@ -24,9 +24,9 @@
   },
   "homepage": "https://github.com/iamnoel/petsgame-backend#readme",
   "dependencies": {
-    "body-parser": "^1.19.0",
+    "body-parser": "^1.20.1",
     "dotenv": "^8.2.0",
-    "express": "^4.17.1",
+    "express": "^4.18.2",
     "morgan": "^1.9.1",
     "nodemon": "^2.0.2"
   },
